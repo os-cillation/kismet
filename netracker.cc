@@ -2264,11 +2264,6 @@ int Netracker::TimerKick() {
 		globalreg->kisnetserver->SendToAll(_NPM(PROTO_REF_CLIENT),
 										   (void *) cli);
 
-		for (map<uuid, source_data *>::iterator sdi = cli->source_map.begin();
-			 sdi != cli->source_map.end(); ++sdi) {
-			globalreg->kisnetserver->SendToAll(proto_ref_clisrc,
-											   (void *) sdi->second);
-		}
 
 		for (asi = cli->ssid_map.begin(); asi != cli->ssid_map.end(); ++asi) {
 			if (asi->second->dirty == 0)
@@ -2971,6 +2966,9 @@ int Netracker::netracker_chain_handler(kis_packet *in_pack) {
 											   (void *) asi->second);
 		}
 	}
+
+	for (map<uuid, source_data *>::iterator sdi = cli->source_map.begin(); sdi != cli->source_map.end(); ++sdi)
+		globalreg->kisnetserver->SendToAll(proto_ref_clisrc, (void *) sdi->second);
 
 	if (net->dirty == 0) {
 		net->dirty = 1;
